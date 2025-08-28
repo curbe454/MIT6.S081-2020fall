@@ -120,6 +120,32 @@ walkaddr(pagetable_t pagetable, uint64 va)
   return pa;
 }
 
+// Lab pgtbl, Print a page table: vmprint definition.
+void vmprint_helper(pagetable_t pagetable, int level)
+{
+  if (level < 0)
+    return;
+
+  static char* prefix[]={".. .. ..", ".. ..", ".."};
+
+  // page entry number 512(1 << 9)
+  for (int i = 0; i < 512; i++) {
+    pte_t pte = pagetable[i];
+    if (pte & PTE_V) {
+      printf("%s%d: pte %p pa %p\n", prefix[level], i, pte, PTE2PA(pte));
+      vmprint_helper((pagetable_t)PTE2PA(pte), level-1);
+    }
+  }
+}
+
+void vmprint(pagetable_t pagetable)
+{
+  int level = 2; // three level page directories
+
+  printf("page table %p\n", pagetable);
+  vmprint_helper(pagetable, level);
+}
+
 // add a mapping to the kernel page table.
 // only used when booting.
 // does not flush TLB or enable paging.
