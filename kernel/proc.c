@@ -675,3 +675,21 @@ procdump(void)
     printf("\n");
   }
 }
+
+// Lab pgtbl, pgaccess
+int
+pgaccess(uint64 base, int num, int *mask)
+{
+  pte_t *pte;
+  int res = 0;
+  for (int i = 0 ; i < num; ++i) {
+    pte = walk(myproc()->pagetable, base, 0);
+    if (pte != 0 && (*pte) & PTE_A) {
+      res |= 1 << i;
+      *pte ^= PTE_A;
+    }
+    base += PGSIZE;
+  }
+  *mask = res;
+  return 0;
+}

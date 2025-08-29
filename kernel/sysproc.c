@@ -81,6 +81,25 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  uint64 ppage, pmask;
+  int num;
+
+  if(argaddr(0, &ppage) < 0)
+    return -1;
+  if(argint(1, &num) < 0)
+    return -1;
+  if(argaddr(2, &pmask) < 0)
+    return -1;
+
+  if(num > (sizeof(int) * 8))
+    return -1;
+
+  int mask;
+  pgaccess(ppage, num, &mask);
+
+  if(copyout(myproc()->pagetable, pmask, (char *)&mask, sizeof(int)) < 0)
+    return -1;
+
   return 0;
 }
 #endif
