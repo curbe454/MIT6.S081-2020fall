@@ -1,1 +1,1 @@
-Map the USYSCALL from kernel can speed up syscall.
+sys_uptime can also be sped up. Kernel can write the tick into the USYSCALL page, and user-state process can read it from this page.
